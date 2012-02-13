@@ -169,18 +169,22 @@ vector< int > DATCompression::compress( vector< int > data ) {
 ///////////////////////////////////////////////////////////////////////////////
 /*OVO SE NE PREDAJE*/
 ///////////////////////////////////////////////////////////////////////////////
+#include <fstream>
+#include <cstdio>
+#include <cstring>
+#include <cstdlib>
 
 // splitanje stringova (preuzeto s 1. utr labosa :P )
-vector< string > split(const string &mrcina, const string &cepalo) {
+vector< std::string > split(const std::string &mrcina, const std::string &cepalo) {
     
-    vs komadici;
+    vector< string > komadici;
     int mjestoZaCepanje = 0;
     int odmak = 0;
     
     while ( mjestoZaCepanje != string::npos ) {
         
         mjestoZaCepanje = mrcina.find(cepalo, odmak);
-        string komad( mrcina, odmak, mjestoZaCepanje - odmak );
+        std::string komad( mrcina, odmak, mjestoZaCepanje - odmak );
         komadici.push_back( komad );
         odmak = mjestoZaCepanje + cepalo.size();
     }
@@ -197,9 +201,9 @@ int main( int argc, char *argv[] ) {
     
     int broj, X = 0, Y = 0, L = 0;
     enum stanja { prviRedak, ostaliRetci };
-    stanje ucitavanje = prviRedak;
+    stanja ucitavanje = prviRedak;
     string redak;
-    vector< string > splitaniRedak;
+    vector< std::string > splitaniRedak;
     
     // postavi dimenzije ulaznih podataka na 0, kasnije ce se promijeniti
     ulazniPodaci.push_back( X );
@@ -213,8 +217,8 @@ int main( int argc, char *argv[] ) {
         
         //TODO probni print dal radi split
         
-        int trenutniX = atoi( splitaniRedak[0].cstr() );
-        int trenutniY = atoi( splitaniRedak[1].cstr() );
+        int trenutniX = atoi( splitaniRedak[0].c_str() );
+        int trenutniY = atoi( splitaniRedak[1].c_str() );
         
         if ( trenutniX == X ) {
             X++;
@@ -232,17 +236,18 @@ int main( int argc, char *argv[] ) {
         for ( vector< string >::iterator it = splitaniRedak.begin() + 2;
             it != splitaniRedak.end(); it++ ) {
             
-            ulazniPodaci.push_back( atoi( (*it).cstr() ) );
+            ulazniPodaci.push_back( atoi( (*it).c_str() ) );
         }
     }
     
+    //podesi dimenzije
     ulazniPodaci[0] = X;
     ulazniPodaci[1] = Y;
     ulazniPodaci[2] = L;
     
     DATCompression mojKompresor;
     
-    vector< int > tijesno = mojKompresor( ulazniPodaci );
+    vector< int > tijesno = mojKompresor.compress( ulazniPodaci );
     
     for ( vector< int >::iterator it = tijesno.begin(); it != tijesno.end(); it++ ) {
         
